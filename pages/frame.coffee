@@ -20,7 +20,7 @@ class Frame
     expect(thisElement.waitReady()).toBeTruthy()
 
   taskRan: ->
-    browser.sleep Settings.defaultTimeout
+    waitForTextToAppear(thisElement.element(byTaskRan))
     thisElement.element(byTaskRan).getText()
 
   pin: ->
@@ -80,5 +80,14 @@ class Frame
             )
         , Settings.longTimeout)
     )
+
+  waitForTextToAppear = (elem) ->
+    browser.driver.wait( ->
+      elem.waitReady().then( () ->
+        elem.getText().then((text) ->
+          text != ""
+        )
+      )
+    , Settings.longTimeout)
 
 module.exports = Frame

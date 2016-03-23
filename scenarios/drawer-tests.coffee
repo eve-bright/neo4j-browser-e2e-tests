@@ -40,7 +40,7 @@ describe 'Drawer', () ->
       links.each (elem) ->
         text = elem.getText()
         expect(text).not.toBe `undefined`
-        elem.click()
+        page.getStream().waitForStreamChangeWhen(elem, "click")
         expect(page.latestFrame().hasError()).toBe no
         expect(page.latestFrame().taskRan()).toContain elem.getAttribute("play-topic")
 
@@ -54,11 +54,10 @@ describe 'Drawer', () ->
     it 'should have working `examples` in info drawer', ->
       panes = page.getDrawer().getPanes()
       panes.examples.all(By.css("a")).each((elem)->
-        elem.click().then(->
-          elem.getAttribute("play-topic").then((attribute) ->
-            expect(page.latestFrame().hasError()).toBe no
-            expect(page.latestFrame().taskRan()).toContain attribute.split("-").join(" ")
-          )
+        page.getStream().waitForStreamChangeWhen(elem, "click")
+        elem.getAttribute("play-topic").then((attribute) ->
+          expect(page.latestFrame().hasError()).toBe no
+          expect(page.latestFrame().taskRan()).toContain attribute.split("-").join(" ")
         )
       )
     it 'should have working `help` in info drawer', ->

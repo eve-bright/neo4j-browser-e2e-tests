@@ -27,7 +27,13 @@ class Drawer
 
   openInfo: ->
     element(byInfo).click()
-    browser.sleep Settings.longTimeout
+    browser.driver.wait( ->
+      element(byHeading).waitReady().then( () ->
+        element(byHeading).getText().then(
+          (heading) ->
+            heading == "Database Information"
+        ))
+    ,Settings.longTimeout)
     expect(element(byDrawer).isDisplayed()).toBeTruthy()
 
   getAllLinks: ->
